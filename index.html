@@ -2062,7 +2062,7 @@
                 window.activeCharts[canvasId] = new Chart(el.getContext('2d'), config);
             }
         }
-
+        
         function drawMixedDurationChart(canvasId, labels, lineData, barData, lineColor, titleText, fleetName) {
             safeChartInit(canvasId, {
                 type: 'line',
@@ -2082,12 +2082,10 @@
                         datalabels: {
                             display: true,
                             formatter: function(value, context) {
-                                if (context.dataset.type === 'line') {
-                                    if (value == null) return '';
-                                    let hrs = Math.floor(value);
-                                    let mins = Math.round((value - hrs) * 60);
-                                    return hrs + ':' + (mins < 10 ? '0' : '') + mins;
-                                }
+                                // Se o valor for nulo, não mostra nada no gráfico
+                                if (value == null) return '';
+                                
+                                // Retorna o valor exato que foi inserido na tabela (sem converter para horas/minutos)
                                 return value;
                             },
                             align: function(context) { return context.dataset.type === 'line' ? 'top' : 'center'; },
@@ -2248,13 +2246,11 @@
                         legend: { display: true, position: 'top', labels: { boxWidth: 15, font: {size: 13, weight: 'bold'} } },
                         datalabels: {
                             formatter: function(value, context) {
-                                if (context.dataset.type === 'line') {
-                                    if (value == null) return '';
-                                    let hrs = Math.floor(value);
-                                    let mins = Math.round((value - hrs) * 60);
-                                    return hrs + ':' + (mins < 10 ? '0' : '') + mins;
-                                }
-                                return value;
+                                // Se o valor for nulo, não mostra nada
+                                if (value == null) return '';
+                                
+                                // ATUALIZAÇÃO: Devolve diretamente o número (ex: 6.48) sem converter para relógio
+                                return value; 
                             },
                             color: function(context) { return context.dataset.type === 'line' ? '#2d3748' : '#ffffff'; },
                             font: { weight: 'bold', size: 12 }
