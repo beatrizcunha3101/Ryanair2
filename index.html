@@ -1198,6 +1198,17 @@
                     <button type="button" class="btn-dyn rem" onclick="window.removeDynamicRow('hils-inputs-body')">- Remove Row</button>
                 </div>
             </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label style="font-weight: bold; display: block; margin-bottom: 8px;">Meses do Gráfico (Eixo X):</label>
+              <div id="hils-super-labels-inputs" style="display: flex; gap: 8px;">
+                <input type="text" class="form-control hils-month-input" data-index="0" placeholder="Mês 1" style="width: 100%;">
+                <input type="text" class="form-control hils-month-input" data-index="1" placeholder="Mês 2" style="width: 100%;">
+                <input type="text" class="form-control hils-month-input" data-index="2" placeholder="Mês 3" style="width: 100%;">
+                <input type="text" class="form-control hils-month-input" data-index="3" placeholder="Mês 4" style="width: 100%;">
+                <input type="text" class="form-control hils-month-input" data-index="4" placeholder="Mês 5" style="width: 100%;">
+                <input type="text" class="form-control hils-month-input" data-index="5" placeholder="Mês 6" style="width: 100%;">
+              </div>
+            </div>
 
             <div class="form-grid" style="margin-top: 20px;">
                 <div class="form-section">
@@ -1838,7 +1849,20 @@
             });
 
             document.getElementById('editModal').style.display = 'flex';
+            // --- ATUALIZAÇÃO: Preencher os inputs dos meses ao abrir o modal ---
+            const hilsInputs = document.querySelectorAll('#hils-super-labels-inputs .hils-month-input');
+            hilsInputs.forEach((input, index) => {
+              // Se o array s.hilsSuperLabels existir e tiver este índice, usa-o. Caso contrário, deixa o padrão M1, M2...
+              if (s.hilsSuperLabels && s.hilsSuperLabels[index]) {
+                input.value = s.hilsSuperLabels[index];
+              } else {
+                input.value = `M${index + 1}`;
+              }
+            });
         };
+        
+
+
 
         window.closeEditModal = function() { 
             document.getElementById('editModal').style.display = 'none'; 
@@ -1846,6 +1870,19 @@
 
         window.saveVisualData = function() {
             let s = appStates[currentShift];
+
+            // --- ATUALIZAÇÃO: Recolher os novos nomes dos meses ao gravar ---
+            const hilsInputsAoGravar = document.querySelectorAll('#hils-super-labels-inputs .hils-month-input');
+            s.hilsSuperLabels = []; // Limpa o array antigo para meter os novos valores
+            
+            hilsInputsAoGravar.forEach((input) => {
+              // Guarda o valor inserido. Se estiver vazio, coloca um traço ou o placeholder por segurança
+              s.hilsSuperLabels.push(input.value.trim() || '---');
+            });
+            
+            // A partir daqui, o teu código original já deve chamar a função:
+            // drawMultiLineChart('chart-ng-hils-super', s.hilsSuperLabels, ...);
+        
             
             s.shiftLabel = document.getElementById('in-shift').value;
             s.month1 = document.getElementById('in-month1').value; s.month2 = document.getElementById('in-month2').value;
